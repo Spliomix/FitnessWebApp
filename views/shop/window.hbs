@@ -1,0 +1,15 @@
+<section class="get"> 
+  <form action="/window" method="post">
+    <div>
+        {{# each items }}
+            <article class="item">
+                <div>text: {{ this.text }}</div>
+            </article>
+        {{/each}}
+      </div> 
+    </form>
+        <form action="/texti" method="post">
+          Sticker Tag <input type="text" name="stickertag"><br>
+          <button  type="submit" class="btn btn-primary" value="text">OK</button>
+        </form>
+</section>

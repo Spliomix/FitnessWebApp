@@ -1,0 +1,15 @@
+        <!-- Collect the nav links, forms, and other content for toggling -->
+       
+{{# if login }}
+  <div>
+    <button id="button" onclick="myfunc()">new fitnessplan</button>
+    <button type="submit" class="btn btn-primary">choose fitnessplan</button> 
+  </div>
+
+  <script> 
+    console.log("index.hbs"); 
+    function myfunc(){
+      window.location.href = "https://fitness-webapp.glitch.me/createPlan";
+    }
+  </script>
+{{/if}}
