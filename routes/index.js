@@ -70,6 +70,12 @@ router.get('/createPlan', function(req, res){
        res.render('shop/fitnessplanCreation');
   });
 
+router.post('/newPlan', function(req, res){
+  console.log(req.body);
+
+  
+    res.render('shop/fitnessplanCreation');
+  });
 
 
 module.exports = router;

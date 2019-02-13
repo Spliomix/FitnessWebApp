@@ -1,7 +1,7 @@
 <p>
-  Name des Plans
+    Name des Plans
 </p>
- <input id="nameOfThePlan" type="text">
+<input id="nameOfThePlan" type="text">
 <p>
     Trainingstyp
 </p>
@@ -15,40 +15,37 @@
     <button onclick="openModal()" class="btn btn-primary">neue Übung</button>
 
     <div id="ex1" class="modal">
-      <p>
-  Name der Übung
-      </p>
-       <input id="nameOfTheExercie" type="text">
-      <p>
-        <p>Sätze</p>
-        Anzahl Wiederholungen
-        <li>
-            <input id="wh1" type="number" name="quantity" min="0" max="20" value ="0">
-        </li>
-        <li>
-            <input id="wh2" type="number" name="quantity" min="0" max="20" value ="0">
-        </li>
-        <li>
-            <input id="wh3" type="number" name="quantity" min="0" max="20" value ="0">
-        </li>
-        <li>
-            <input id="wh4" type="number" name="quantity" min="0" max="20" value ="0">
-        </li>
-        <li>
-            <input id="wh5" type="number" name="quantity" min="0" max="20" value ="0">
-        </li>
-        <li>
-            <input id="wh6" type="number" name="quantity" min="0" max="20" value ="0">
-        </li><br>
-      Notiz
-      <input id="notiz" type="text">
+        <p>
+            Name der Übung
+        </p>
+        <input id="nameOfTheExercie" type="text">
+            <p>Sätze</p>
+            Anzahl Wiederholungen
+            <li>
+                <input id="wh1" type="number" name="quantity" min="0" max="20" value="0">
+            </li>
+            <li>
+                <input id="wh2" type="number" name="quantity" min="0" max="20" value="0">
+            </li>
+            <li>
+                <input id="wh3" type="number" name="quantity" min="0" max="20" value="0">
+            </li>
+            <li>
+                <input id="wh4" type="number" name="quantity" min="0" max="20" value="0">
+            </li>
+            <li>
+                <input id="wh5" type="number" name="quantity" min="0" max="20" value="0">
+            </li>
+            <li>
+                <input id="wh6" type="number" name="quantity" min="0" max="20" value="0">
+            </li><br>
+            Notiz
+            <input id="notiz" type="text">
 
-        <a href="#" rel="modal:close">Close</a>
-        <button onclick="newExercise()" type="submit" class="btn btn-primary">save</button>
+            <a href="#" rel="modal:close">Close</a>
+            <button onclick="newExercise()" type="submit" class="btn btn-primary">save</button>
     </div>
-    Anzahl Wiederholungen
-
-    Notiz
+ <button onclick="createPlan()" type="submit" class="btn btn-primary">save</button>
     Wochentagszuweisung(optional)
 </div>
 
@@ -58,14 +55,31 @@
 
 
 <script>
-  let repetations = [];
+    let repetations = [];
     let newExercise = () => {
         console.log(document.getElementById('wh1').value);
-      
+
         $.modal.close();
     }
     let openModal = () => {
         $('#ex1').modal();
+    }
+    
+    let createPlan = () =>{
+      let data = {
+       training:"pumpin",
+        reps:"300"
+      }
+      $.ajax({
+                data: JSON.stringify(data),
+                type: "POST",
+                contentType: "application/json",
+                url: "newPlan",
+                success: function () {
+                    console.log("succsess");
+                }
+            });
+      
     }
     setTimeout(function () {
         console.log("fitnessplanCreation");
