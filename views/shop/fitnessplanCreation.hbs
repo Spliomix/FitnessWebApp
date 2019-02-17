@@ -1,3 +1,4 @@
+  {{# if login }}  
 <p>
     Name des Plans
 </p>
@@ -104,7 +105,10 @@
                 type: "POST",
                 contentType: "application/json",
                 url: "newPlan",
-                success: success(data)                    
+                success: success(data),
+                error: function (request, status, error) {
+                        console.log(request.responseText);
+                }
             });
     }
     
@@ -128,3 +132,5 @@
                   }
     }
 </script>
+
+  {{/if}}

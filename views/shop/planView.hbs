@@ -1,0 +1,24 @@
+  {{# if login }}  
+<div id="planWindow" >
+  Übung2...<br>
+  {{plan.name}}<br>
+   {{plan.type}}<br>
+       {{# each plan.exercises }}
+      <li>Plan: {{this.name}}
+        <p>Notiz: {{this.notiz}}</p>
+        <p>Wiederholungen: {{# each this.reps }}
+        {{this}}
+        {{/each}}</p>
+      </li>
+    {{/each}}
+
+  
+</div>
+
+
+<script>
+
+
+
+</script>
+  {{/if}}

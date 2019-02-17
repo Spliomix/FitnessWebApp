@@ -1,15 +1,28 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
-       
-{{# if login }}
+    {{# if login }}       
+
   <div>
-    <button id="button" onclick="myfunc()">new fitnessplan</button>
-    <button type="submit" class="btn btn-primary">choose fitnessplan</button> 
-  </div>
+    {{# each messages }}
+      <li><a onclick="showPlan('{{{this.name}}}')"  >{{this.name}}</a></li>
+    {{/each}}
+    <button  onclick="hrefCreatePlan()" type="submit" class="btn btn-primary">new fitnessplan</button>
+    <button onclick="startWorkout()" type="submit" class="btn btn-primary">new fitnessplan</button>
+
+</div>
 
   <script> 
     console.log("index.hbs"); 
-    function myfunc(){
+    let hrefCreatePlan=()=>{
       window.location.href = "https://fitness-webapp.glitch.me/createPlan";
     }
+    
+    let showPlan =(planName)=>{
+      window.location.href = "https://fitness-webapp.glitch.me/"+"plan/"+planName;
+    }
+    
+    let startWorkout = () =>{
+       window.location.href = "https://fitness-webapp.glitch.me/startWorkout";
+    }
+    
   </script>
-{{/if}}
+  {{/if}}
