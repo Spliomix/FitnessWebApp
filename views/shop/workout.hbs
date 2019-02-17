@@ -1,9 +1,22 @@
   {{# if login }}  
 
+<p>
+  choose exercise
+</p>
 
-
-<li><a onclick="showPlan('{{{this.name}}}')"  >{{this.name}}</a></li>
-
+       {{# each plan.exercises }}
+      <li>Plan: {{this.name}}
+        <p>Notiz: {{this.notiz}}</p>
+        <input id="notiz" type="text">
+        <p>Wiederholungen: {{# each this.reps }}
+          <p>
+            KG:
+        </p>
+         <input id="notiz3" type="text">
+        {{this}}
+        {{/each}}</p>
+      </li>
+    {{/each}}
 
 
 
