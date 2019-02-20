@@ -57,7 +57,6 @@ router.get('/*/style.css', function(req, res) {
 
 //show the selected plan
 router.get('/plan/:name', function(req, res) {
-
     var name = req.params.name;
     console.log("planname: "+ name);
     planDb.find({name:name},  function (err, plan) {
@@ -65,6 +64,7 @@ router.get('/plan/:name', function(req, res) {
       res.render('shop/planView', {plan: plan[0]});
     });  
 });
+
 
 let actDateOwn = ()=>{//YYYYMMDD
   let date = new Date();
@@ -83,15 +83,15 @@ router.get('/startWorkout', function (req, res) {
         res.render('shop/index');
     } else {
         let planId = req.user.activePlan;
-        planDb.find({ _id: planId }, function (err, plan) {
+        planDb.findOne({ _id: planId }, function (err, plan) {
             if (plan) {
-                planDb.find({ date: actDateOwn }, function (err, workout) {
+                planDb.findOne({ date: actDateOwn }, function (err, workout) {
                     console.log(workout);
                     if (workout) {
-                        res.render('shop/workout', { plan: plan[0], workout: workout[0] });
+                        res.render('shop/workout', { plan: plan, workout: workout });
                     }
                     else {
-                        res.render('shop/workout', { plan: plan[0] });
+                        res.render('shop/workout', { plan: plan });
                     }
                 });
             } else {
@@ -112,10 +112,12 @@ router.post('/saveWorkout', function (req, res) {
   //dont know if i need the finding thing, i could only delete it annd do the things in the delete callback
     workoutDb.findOne({ userId: req.user.id, plan: planId, date: actDateOwn() }, function (err, workoutData) {
         if(workoutData){
-          workoutDb.deleteOne({_id :new mongoose.Types.ObjectId(workoutData._id)}); 
+          console.log("delete the following Id: " +workoutData._id);
+          workoutDb.findByIdAndRemove(new mongoose.mongo.ObjectID(workoutData._id), function (err,offer){
+              if(err) { throw err; }
+            console.log(offer);
+          }); 
         }
-
-
         let workout = [];//values from the exercises
         let weights = req.body;
         let weightPointer = 0;
@@ -129,7 +131,7 @@ router.post('/saveWorkout', function (req, res) {
                 }
                 workout.push(exercises);
             }
-
+ 
             let dataIn = {
                 plan: planId,
                 userId: userId,
@@ -138,11 +140,31 @@ router.post('/saveWorkout', function (req, res) {
             }
             let data = new workoutDb(dataIn);//need a validation
             data.save();
-
             res.sendStatus(200);
         });
     });
 });
 
+
+
+//load the predefined values
+router.post('/loadPreValues', (req, res, next ) => {
+      if (!req.isAuthenticated()) {
+        res.render('shop/index');
+    } else {
+        let planId = req.user.activePlan;
+        workoutDb.findOne({ userId: req.user.id, plan: planId, date: actDateOwn() }, function (err, workout) {
+          console.log(workout);
+          let data=[];
+          for(let i = 0; i<workout.exercises.length;++i){
+            for(let j = 0; j<workout.exercises[i].reps.length;j++){
+             data.push( workout.exercises[i].reps[j]);
+            }
+          }
+          console.log(data);
+          res.json(data);
+        });
+    }
+});
 
 module.exports = router;

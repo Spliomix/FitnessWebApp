@@ -6,8 +6,8 @@
 
        {{# each plan.exercises }}
       <li>Übung: {{this.name}}
-        <p>Notiz: {{this.notiz}}</p>
-        <input class="notiz" type="text">
+        <p>Notiz: {{this.notiz}}</p>     
+        <input class="notiz" type="text" >
         <p>Wiederholungen: {{# each this.reps }}
           <p>
             KG:
@@ -22,9 +22,31 @@
 
 
 <script>
-console.log("workout is loaded");
- 
+
+
+   console.log("workout is loaded");
+  setTimeout(function(){ 
+  $.ajax({
+                type: "POST",
+                url: "loadPreValues",
+                dataType: 'json',
+                success: function(response){
+                    loadPreValues(response); 
+                },
+                error: function (request, status, error) {
+                        console.log(request.responseText);
+                }
+            });
+  }, 500);
   
+ let loadPreValues = (data) =>{
+   let inputElem = document.getElementsByClassName("reps");
+   if(inputElem.length!=data.length)throw "object lengths are not the same";
+    for(let i = 0; i<data.length;++i){
+      inputElem[i].value=data[i];
+    }
+ }
+
   
   let save = () =>{
     let data = [];
