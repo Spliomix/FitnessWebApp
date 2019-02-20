@@ -77,64 +77,72 @@ let actDateOwn = ()=>{//YYYYMMDD
 
 
 //render the typical workout mask with the corresponding plan
-router.get('/startWorkout', function(req, res){
-
-  if(!req.isAuthenticated()){
-console.log("hombrine");
-           res.render('shop/index');
-     }else{
-       let planId = req.user.activePlan;
-    planDb.find({_id:planId},  function (err, plan) {
-      planDb.find({_id:planId},  function (err, workout) {
-          if(plan)
-            res.render('shop/workout', {plan: plan[0], workout:workout});
-          else
-            res.render('shop/workout');
-        });  
-    });  
-}
-  
+//if the user used made this workout on the same day, the values we be loaded
+router.get('/startWorkout', function (req, res) {
+    if (!req.isAuthenticated()) {
+        res.render('shop/index');
+    } else {
+        let planId = req.user.activePlan;
+        planDb.find({ _id: planId }, function (err, plan) {
+            if (plan) {
+                planDb.find({ date: actDateOwn }, function (err, workout) {
+                    console.log(workout);
+                    if (workout) {
+                        res.render('shop/workout', { plan: plan[0], workout: workout[0] });
+                    }
+                    else {
+                        res.render('shop/workout', { plan: plan[0] });
+                    }
+                });
+            } else {
+                res.render('shop/workout');
+            }
+        });
+    }
 });
 
 
 
 //save the workout
-router.post('/saveWorkout', function(req, res){
-
-  let saveDate = actDateOwn();//YYYYMMDD
+router.post('/saveWorkout', function (req, res) {
+    let saveDate = actDateOwn();//YYYYMMDD
+    let userId = req.user.id;
+    let planId = req.user.activePlan;
   
-  let userId = req.user.id;
-  let planId = req.user.activePlan;
-  
-  let workout = [];//values from the exercises
-  let weights = req.body;
-  let weightPointer = 0 ;
-  
-    planDb.find({_id:planId},  function (err, plan) {
-      //calc the order of the weights
-      for(let i = 0; i<plan[0].exercises.length; ++i){
-        let exercises = [];
-            for(let j = 0; j<plan[0].exercises[i].reps.length; ++j){
-              exercises.push(weights[weightPointer++]);
-            } 
-        workout.push(exercises);
+  //dont know if i need the finding thing, i could only delete it annd do the things in the delete callback
+    workoutDb.findOne({ userId: req.user.id, plan: planId, date: actDateOwn() }, function (err, workoutData) {
+        if(workoutData){
+          workoutDb.deleteOne({_id :new mongoose.Types.ObjectId(workoutData._id)}); 
         }
-       
-  let dataIn = {
-    plan: planId,
-    userId: userId,
-    exercises: workout, 
-    date: saveDate,
-  }
-  console.log(dataIn);
-    let data = new workoutDb(dataIn);//need a validation
-    data.save();
-      
-      res.sendStatus(200);
-    });  
-  
- 
-  
+
+
+        let workout = [];//values from the exercises
+        let weights = req.body;
+        let weightPointer = 0;
+
+        planDb.find({ _id: planId }, function (err, plan) {
+            //calc the order of the weights
+            for (let i = 0; i < plan[0].exercises.length; ++i) {
+                let exercises = [];
+                for (let j = 0; j < plan[0].exercises[i].reps.length; ++j) {
+                    exercises.push(weights[weightPointer++]);
+                }
+                workout.push(exercises);
+            }
+
+            let dataIn = {
+                plan: planId,
+                userId: userId,
+                exercises: workout,
+                date: saveDate,
+            }
+            let data = new workoutDb(dataIn);//need a validation
+            data.save();
+
+            res.sendStatus(200);
+        });
+    });
 });
+
 
 module.exports = router;
