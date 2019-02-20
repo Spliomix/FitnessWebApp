@@ -1,0 +1,51 @@
+  {{# if login }}  
+
+<p>
+  choose exercise
+</p>
+
+       {{# each plan.exercises }}
+      <li>Übung: {{this.name}}
+        <p>Notiz: {{this.notiz}}</p>
+        <input class="notiz" type="text">
+        <p>Wiederholungen: {{# each this.reps }}
+          <p>
+            KG:
+        </p>
+         <input onclick="save()" class="reps" type="number" value="0">
+        {{this}}
+        {{/each}}</p>
+      </li>
+    {{/each}}
+    <button onclick="save()" type="submit" class="btn btn-primary">fertig</button>
+
+
+
+<script>
+console.log("workout is loaded");
+ 
+  
+  
+  let save = () =>{
+    let data = [];
+    let inputElem = document.getElementsByClassName("reps");
+    for(let i=0; i< inputElem.length; ++i)
+      data.push(inputElem[i].value);
+    console.log(data);
+      $.ajax({
+                data: JSON.stringify(data),
+                type: "POST",
+                contentType: "application/json",
+                url: "saveWorkout",
+                success: success(data),
+                error: function (request, status, error) {
+                        console.log(request.responseText);
+                }
+            });
+  }
+  
+  let success = (data) => {
+   console.log("success");    
+   }
+</script>
+  {{/if}}
