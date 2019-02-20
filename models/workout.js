@@ -9,7 +9,7 @@ mongoose.Promise = global.Promise;
 let workoutSchema = new Schema({
     plan: {type: String, required: true},
     userId: {type: String, required: true},
-    exercises: {type: [exercise], required: false},
+    exercises: {type: [], required: false},
     date: {type: String, required:true},//YYYY-MM-DD
 });
 
